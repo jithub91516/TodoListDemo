@@ -1,16 +1,15 @@
 package jpabook.jpashop.controller;
 
 
-import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -26,17 +25,20 @@ public class MemberController {
      }
 
      @PostMapping("/members/new")
-    public String create(@Valid MemberForm form, BindingResult result){
+    public String create(@Valid MemberForm form, BindingResult result) throws Exception{
 
         if (result.hasErrors()){
             return "members/createMemberForm";
+        }else if(!form.getPassword().equals(form.getPasswordCheck())){
+            return "members/createMemberForm";
         }
-
-         Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
 
          Member member = new Member();
          member.setName(form.getName());
-         member.setAddress(address);
+         member.setLoginId(form.getLoginId());
+         member.setPassword(form.getPassword());
+         member.setEmail(form.getEmail());
+
 
          memberService.join(member);
          return "redirect:/";
@@ -48,6 +50,13 @@ public class MemberController {
         model.addAttribute("members", members);
         return "members/memberList";
 
+    }
+
+    @PostMapping("/members/delete")
+    public String deleteMember(@Valid String id, HttpSession session){
+        String res = memberService.deleteMember(id);
+
+        return "login";
     }
 
 }

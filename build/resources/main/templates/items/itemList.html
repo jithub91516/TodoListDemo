@@ -1,36 +1,77 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
+
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="mb-3">
+        <button type="button" class="btn btn-primary" th:attr="onclick='changeAll()'">ALL</button>
+        <button type="button" class="btn btn-secondary" th:attr="onclick='changeRecent()'">Recent</button>
+    </div>
     <div>
         <table class="table table-striped">
             <thead>
             <tr>
                 <th>#</th>
-                <th>상품명</th>
-                <th>가격</th>
-                <th>재고수량</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>생성일</th>
                 <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="table-body">
             <tr th:each="item : ${items}">
                 <td th:text="${item.id}"></td>
-                <td th:text="${item.name}"></td>
-                <td th:text="${item.price}"></td>
-                <td th:text="${item.stockQuantity}"></td>
+                <td th:text="${item.title}"></td>
+                <td th:text="${item.description}"></td>
+                <td th:text="${item.date}"></td>
                 <td>
-                    <a href="#" th:href="@{/items/{id}/edit (id=${item.id})}"
-                       class="btn btn-primary" role="button">수정</a>
+                    <select class="form-control" th:attr="onchange='changeStatus(' + ${item.id} + ', this)'">
+                        <option value="todo" th:selected="${item.status == 'todo'}">할 일</option>
+                        <option value="inProgress" th:selected="${item.status == 'inProgress'}">진행중</option>
+                        <option value="done" th:selected="${item.status == 'done'}">완료됨</option>
+                    </select>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
     <div th:replace="fragments/footer :: footer"/>
+
 </div> <!-- /container -->
+<script>
+    function changeStatus(itemId, selectElement) {
+        var status = selectElement.value;
+        console.log(itemId);
+
+        fetch('/items/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: itemId,
+                status: status,
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function changeAll() {
+        window.location.href = '/items';
+    }
+
+    function changeRecent() {
+        window.location.href = '/items/recent';
+    }
+</script>
 
 </body>
 </html>

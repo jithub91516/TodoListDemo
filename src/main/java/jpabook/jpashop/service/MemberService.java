@@ -1,11 +1,16 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.common.AES;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -17,9 +22,15 @@ public class MemberService {
 
     /*회원 가입*/
     @Transactional
-    public Long join(Member member) {
-        validateDuplicateMember(member);//중복회원 검증
+    public Long join(Member member) throws Exception {
+        validateDuplicateMember(member);
+
+        String password = member.getPassword();
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        member.setPassword(hashedPassword);
+
         memberRepository.save(member);
+
         return member.getId();
     }
 
@@ -32,6 +43,10 @@ public class MemberService {
 
     public List<Member> findMembers(){
         return memberRepository.findAll();
+    }
+
+    public String deleteMember(String loginId){
+        return memberRepository.deleteOne(loginId);
     }
 
     @Transactional(readOnly = true)

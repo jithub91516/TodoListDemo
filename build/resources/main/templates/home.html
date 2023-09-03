@@ -1,28 +1,41 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-    <title>Login</title>
+    <title>Hello</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 <div class="container">
-    <div th:replace="fragments/loginHeader :: loginHeader" />
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
     <div class="jumbotron">
-        <h1 class="lead">Login</h1>
-        <form action="#" method="post">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-lg btn-primary">Login</button>
+        <h1>Todo List</h1>
+        <p>
+            <a class="btn btn-lg btn-secondary" href="/members">회원 목록</a>
+        </p>
+        <p class="lead">Todo 기능</p>
+        <p>
+            <a class="btn btn-lg btn-dark" href="/items/new">Todo 등록</a>
+            <a class="btn btn-lg btn-dark" href="/items">Todo 목록</a>
+        </p>
+
+        <form action="/members/delete" method="post" id="deleteForm">
+            <input type="hidden" name="id" id="hiddenId">
+            <button type="submit">회원 탈퇴</button>
         </form>
-        <p>Not a member? <a href="/members/new">Register here</a>.</p>
     </div>
     <div th:replace="fragments/footer :: footer" />
-</div> <!-- /container -->
+</div>
+
+<script>
+    document.getElementById('deleteForm').addEventListener('submit', function(event) {
+        if(!confirm("삭제하시겠습니까?")) {
+            event.preventDefault();
+            return;
+        }
+        var loginId = localStorage.getItem('loginId');
+        document.getElementById('hiddenId').value = loginId;
+    });
+</script>
+
 </body>
 </html>

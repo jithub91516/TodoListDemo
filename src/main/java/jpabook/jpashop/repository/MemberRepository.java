@@ -31,4 +31,12 @@ public class MemberRepository {
                 .setParameter("name", name)
                 .getResultList();
     }
+
+    public String deleteOne(String loginId){
+        em.createQuery("DELETE FROM Member m WHERE m.loginId = :login_id")
+                .setParameter("login_id", loginId)
+                .executeUpdate();
+
+        return "success";
+    }
 }

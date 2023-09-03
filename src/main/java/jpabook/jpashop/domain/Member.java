@@ -18,10 +18,12 @@ public class Member {
 
     private String name;
 
-    @Embedded
-    private Address address;
+    private String loginId;
 
-    @OneToMany(mappedBy = "member")
-    private List<Order> orders = new ArrayList<>();
+    private String email;
+
+    private String password;
+
+    private String nickname;
 
 }

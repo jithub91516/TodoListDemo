@@ -7,7 +7,6 @@ import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.exception.NotEnoughStockException;
-import jpabook.jpashop.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @RunWith(SpringRunner.class)
